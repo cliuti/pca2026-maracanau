@@ -85,7 +85,7 @@
             <div style="width:38px;height:38px;border-radius:10px;background:#E4F3EA;color:#189048;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="m9 11 3 3L22 4"></path></svg></div>
             <div style="display:flex;flex-direction:column;gap:3px">
               <span style="font-size:24px;font-weight:800;white-space:nowrap;color:#16242B;line-height:1">{{ totalExecFmt }}</span>
-              <span style="font-size:12px;color:#6A7A82;font-weight:500">Valor iniciado · {{ qtdIniciadas }} DFDs</span>
+              <span style="font-size:12px;color:#6A7A82;font-weight:500">Valor iniciado · {{ qtdIniciadas }} atividades</span>
             </div>
           </div>
           <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:12px">
@@ -132,19 +132,20 @@
               <div style="border:1px solid #EAEFF2;border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
                 <span style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em"><span style="width:9px;height:9px;border-radius:3px;background:#189048"></span>Aprovadas</span>
                 <span style="font-size:17px;font-weight:700;color:#189048">{{ valorConcluidoFmt }}</span>
-                <span style="font-size:11.5px;color:#8A99A0">{{ qtdAprov }} DFDs</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdAprov }} atividades</span>
               </div>
               <div style="border:1px solid #EAEFF2;border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
                 <span style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em"><span style="width:9px;height:9px;border-radius:3px;background:#D08A1E"></span>Em tramitação</span>
                 <span style="font-size:17px;font-weight:700;color:#D08A1E">{{ valorAndamentoFmt }}</span>
-                <span style="font-size:11.5px;color:#8A99A0">{{ qtdTram }} DFDs · análise, aguardando, suspensas</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdTram }} atividades · análise, aguardando, suspensas</span>
               </div>
               <div style="border:1px solid #EAEFF2;border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
                 <span style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em"><span style="width:9px;height:9px;border-radius:3px;background:#EDF1F3;border:1px solid #D7DFE4"></span>Não iniciadas</span>
                 <span style="font-size:17px;font-weight:700;color:#0060A8">{{ valorPlanejadoFmt }}</span>
-                <span style="font-size:11.5px;color:#8A99A0">{{ qtdNaoIni }} DFDs</span>
+                <span style="font-size:11.5px;color:#8A99A0">saldo previsto sem atividade</span>
               </div>
             </div>
+            <span style="font-size:11.5px;color:#8A99A0;line-height:1.5">Inclui {{ qtdSemVincAnd }} atividades iniciadas ({{ valorSemVincAndFmt }}) que não puderam ser vinculadas a um DFD do PCA.</span>
           </div>
 
           <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
@@ -199,7 +200,7 @@
 
           <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
             <div style="display:flex;justify-content:space-between;align-items:center">
-              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Prazo vencido sem início</h2>
+              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Processos não iniciados</h2>
               <span style="font-size:11.5px;font-weight:700;color:#C0392B;background:#FBEAE7;padding:4px 10px;border-radius:20px">{{ qtdAtraso }} DFDs</span>
             </div>
             <span style="font-size:12px;color:#6A7A82;margin-top:-6px">Maiores valores com data prevista já ultrapassada</span>
@@ -312,6 +313,7 @@
                 <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Modalidade</th>
                 <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700;text-align:right">Valor estimado</th>
                 <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Previsão</th>
+                <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700;width:140px">Iniciado</th>
                 <th style="padding:12px 22px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Situação</th>
               </tr>
             </thead>
@@ -334,6 +336,13 @@
                   <td style="padding:13px 14px;color:#46555E">{{ row.modalidade }}</td>
                   <td style="padding:13px 14px;text-align:right;font-weight:600;color:#16242B;white-space:nowrap">{{ row.valorFmt }}</td>
                   <td style="padding:13px 14px;color:#46555E;white-space:nowrap">{{ row.prevFmt }}</td>
+                  <td style="padding:13px 14px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div style="flex:1;height:7px;background:#EDF1F3;border-radius:5px;overflow:hidden"><div style="height:100%;border-radius:5px;background:#189048;width: {{ row.pctWidth }}"></div></div>
+                      <span style="font-size:11.5px;color:#6A7A82;font-weight:600;width:34px">{{ row.pct }}%</span>
+                    </div>
+                    <div style="font-size:10.5px;color:#8A99A0;margin-top:3px">{{ row.atLabel }}</div>
+                  </td>
                   <td style="padding:13px 22px">
                     <span style="display:inline-block;font-size:12px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;background: {{ row.statusBg }};color: {{ row.statusColor }}">{{ row.status }}</span>
                   </td>
@@ -447,7 +456,7 @@
             <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Atividades iniciadas sem vínculo com o PCA</h2>
             <span style="font-size:11.5px;font-weight:700;color:#46555E;background:#EDF1F5;padding:4px 10px;border-radius:20px">{{ qtdSemVinculo }} atividades</span>
           </div>
-          <span style="font-size:12.5px;color:#6A7A82;line-height:1.5;margin-top:-6px">Registros da planilha de atividades sem nº de DFD, ou com nº que não consta na versão do PCA de {{ atualizado }} (possíveis inclusões posteriores ou erros de digitação). Não entram nos indicadores acima.</span>
+          <span style="font-size:12.5px;color:#6A7A82;line-height:1.5;margin-top:-6px">Registros da planilha de atividades sem nº de DFD, ou com nº que não consta na versão do PCA de {{ atualizado }} (possíveis inclusões posteriores ou erros de digitação). Entram no Andamento do PCA, mas não na situação, no cronograma nem nos alertas por DFD.</span>
           <div style="display:flex;flex-direction:column;gap:0">
             <sc-for list="{{ semVinculo }}" as="u" hint-placeholder-count="5">
               <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid #EEF2F4">
@@ -481,9 +490,9 @@ class Component extends DCLogic {
   }
   componentWillUnmount(){ clearInterval(this._t); }
 
-  STATUS_COR = { 'Aprovada':'#189048', 'Em análise':'#D08A1E', 'Aguardando secretaria':'#B4690E', 'Suspensa':'#7A8790', 'A iniciar':'#0060A8', 'Prazo vencido':'#C0392B' };
-  STATUS_BG  = { 'Aprovada':'#E4F3EA', 'Em análise':'#FBF1DD', 'Aguardando secretaria':'#F8E9D6', 'Suspensa':'#EEF1F3', 'A iniciar':'#E7EFF7', 'Prazo vencido':'#FBEAE7' };
-  ORDEM = ['Aprovada','Em análise','Aguardando secretaria','Suspensa','A iniciar','Prazo vencido'];
+  STATUS_COR = { 'Aprovada':'#189048', 'Em análise':'#D08A1E', 'Aguardando secretaria':'#B4690E', 'Suspensa':'#7A8790', 'A iniciar':'#0060A8', 'Não iniciado':'#C0392B' };
+  STATUS_BG  = { 'Aprovada':'#E4F3EA', 'Em análise':'#FBF1DD', 'Aguardando secretaria':'#F8E9D6', 'Suspensa':'#EEF1F3', 'A iniciar':'#E7EFF7', 'Não iniciado':'#FBEAE7' };
+  ORDEM = ['Aprovada','Em análise','Aguardando secretaria','Suspensa','A iniciar','Não iniciado'];
   INICIADAS = ['Aprovada','Em análise','Aguardando secretaria','Suspensa'];
   MES_LABEL = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
@@ -504,8 +513,12 @@ class Component extends DCLogic {
     this._items = D.items.map(d=>{
       const [y,m,dd]=d.p.split('-').map(Number);
       const dias = Math.round((t0-Date.UTC(y,m-1,dd))/864e5);
-      const status = d.s ? d.s : (dias>0 ? 'Prazo vencido' : 'A iniciar');
-      return { ...d, mes:m, dias, status, iniciada: !!d.s, superv: d.vi===null, alterado: d.vi!==null && Math.abs(d.vi-d.v)>0.5 };
+      const status = d.s ? d.s : (dias>0 ? 'Não iniciado' : 'A iniciar');
+      let ap=0, tr=0;
+      if(d.a){ const val=x=>x[0]>0?x[0]:d.v;
+        ap=Math.min(d.v, d.a.filter(x=>x[1]==='Aprovada').reduce((s,x)=>s+val(x),0));
+        tr=Math.min(d.v-ap, d.a.filter(x=>x[1]!=='Aprovada').reduce((s,x)=>s+val(x),0)); }
+      return { ...d, mes:m, dias, status, iniciada: !!d.s, ap, tr, iv:ap+tr, nAt:d.a?d.a.length:0, superv: d.vi===null, alterado: d.vi!==null && Math.abs(d.vi-d.v)>0.5 };
     });
   }
 
@@ -538,14 +551,18 @@ class Component extends DCLogic {
 
     const totalPlan = sum(list);
     const ini = list.filter(d=>d.iniciada);
-    const totalExec = sum(ini);
-    const pctExec = totalPlan ? Math.round(totalExec/totalPlan*100) : 0;
     const aprov = list.filter(d=>d.status==='Aprovada');
     const tram = ini.filter(d=>d.status!=='Aprovada');
     const naoIni = list.filter(d=>!d.iniciada);
-    const vAprov = sum(aprov), vTram = sum(tram);
+    let svAnd = S.fSecretaria==='Todas' ? D.unlinked : D.unlinked.filter(u=>u.u.toUpperCase().includes(S.fSecretaria));
+    if(S.fStatus!=='Todos' && S.fStatus!=='Iniciadas') svAnd = svAnd.filter(u=>u.s===S.fStatus);
+    const svAprov = svAnd.filter(u=>u.s==='Aprovada'), svTram = svAnd.filter(u=>u.s!=='Aprovada');
+    const vAprov = sum(list,d=>d.ap)+sum(svAprov), vTram = sum(list,d=>d.tr)+sum(svTram);
+    const vNaoIni = totalPlan - sum(list,d=>d.iv);
+    const totalExecAnd = vAprov + vTram;
+    const pctAnd = totalPlan ? Math.round(totalExecAnd/totalPlan*100) : 0;
 
-    const atrasadas = list.filter(d=>d.status==='Prazo vencido');
+    const atrasadas = list.filter(d=>d.status==='Não iniciado');
     const atrasoPorValor = atrasadas.slice().sort((a,b)=>b.v-a.v);
     const valorRisco = sum(atrasadas);
     const maiorAtraso = atrasadas.reduce((m,d)=>Math.max(m,d.dias),0);
@@ -564,7 +581,7 @@ class Component extends DCLogic {
     const donutStyle = 'width:148px;height:148px;border-radius:50%;background:conic-gradient('+(segs.length?segs.join(','):'#E3E9ED 0% 100%')+')';
 
     const secMap = {};
-    list.forEach(d=>{ const s=secMap[d.u]||(secMap[d.u]={plan:0,exec:0}); s.plan+=d.v; if(d.iniciada) s.exec+=d.v; });
+    list.forEach(d=>{ const s=secMap[d.u]||(secMap[d.u]={plan:0,exec:0}); s.plan+=d.v; s.exec+=d.iv; });
     const secAll = Object.keys(secMap).map(k=>({nome:k, ...secMap[k]})).sort((a,b)=>b.plan-a.plan);
     const secArr = secAll.slice(0,10);
     const maxSec = secArr.length ? secArr[0].plan : 1;
@@ -573,7 +590,7 @@ class Component extends DCLogic {
     const secretariasNota = secAll.length>10 ? '10 maiores de '+secAll.length+' unidades · as demais somam '+this.fmtC(sum(secAll.slice(10),s=>s.plan)) : secAll.length+' unidade(s)';
 
     const mp = Array(12).fill(0), me = Array(12).fill(0);
-    list.forEach(d=>{ mp[d.mes-1]+=d.v; if(d.iniciada) me[d.mes-1]+=d.v; });
+    list.forEach(d=>{ mp[d.mes-1]+=d.v; me[d.mes-1]+=d.iv; });
     const maxMes = Math.max(1, ...mp);
     const meses = this.MES_LABEL.map((lb,i)=>({ label:lb, valorFmt:mp[i]?this.fmtC(mp[i]).replace('R$ ',''):'', planH:(mp[i]/maxMes*90)+'%', execH:(me[i]/maxMes*90)+'%',
       tooltip: lb+': previsto '+this.fmtC(mp[i])+' · iniciado '+this.fmtC(me[i]) }));
@@ -588,6 +605,7 @@ class Component extends DCLogic {
     const tabela = listaTab.slice(0,S.limite).map(d=>({
       id:d.i, objeto:d.o, secretaria:d.u, secretariaFull:U[d.u]||d.u, categoria:d.c, modalidade:d.m,
       valorFmt:this.fmtF(d.v), prevFmt:this.fmtD(d.p), status:d.status, statusColor:this.STATUS_COR[d.status], statusBg:this.STATUS_BG[d.status],
+      pct: Math.round(d.iv/d.v*100), pctWidth: (d.iv/d.v*100)+'%', atLabel: d.nAt ? d.nAt+(d.nAt>1?' atividades':' atividade') : '',
       isSuperv:d.superv, isAlterado:d.alterado, valorIniTitle: d.alterado ? 'PCA inicial: '+this.fmtF(d.vi) : ''
     }));
 
@@ -618,10 +636,11 @@ class Component extends DCLogic {
       onBusca:(e)=>this.setState({busca:e.target.value,limite:100}),
       onMais:()=>this.setState(s=>({limite:s.limite+100})),
       onMaisSV:()=>this.setState({svTodas:true}),
-      totalPlanFmt:this.fmtC(totalPlan), totalExecFmt:this.fmtC(totalExec), pctExec,
+      totalPlanFmt:this.fmtC(totalPlan), totalExecFmt:this.fmtC(totalExecAnd), pctExec:pctAnd,
+      qtdAndTotal:ini.length+svAnd.length, qtdSemVincAnd:svAnd.length, valorSemVincAndFmt:this.fmtC(sum(svAnd)),
       pctAprovW:(totalPlan?vAprov/totalPlan*100:0)+'%', pctTramW:(totalPlan?vTram/totalPlan*100:0)+'%',
-      qtdFmt:list.length.toLocaleString('pt-BR'), qtdIniciadas:ini.length, qtdAprov:aprov.length, qtdTram:tram.length, qtdNaoIni:naoIni.length.toLocaleString('pt-BR'),
-      valorConcluidoFmt:this.fmtC(vAprov), valorAndamentoFmt:this.fmtC(vTram), valorPlanejadoFmt:this.fmtC(sum(naoIni)),
+      qtdFmt:list.length.toLocaleString('pt-BR'), qtdIniciadas:sum(ini,d=>d.nAt)+svAnd.length, qtdAprov:sum(list,d=>d.a?d.a.filter(x=>x[1]==='Aprovada').length:0)+svAprov.length, qtdTram:sum(list,d=>d.a?d.a.filter(x=>x[1]!=='Aprovada').length:0)+svTram.length, qtdNaoIni:naoIni.length.toLocaleString('pt-BR'),
+      valorConcluidoFmt:this.fmtC(vAprov), valorAndamentoFmt:this.fmtC(vTram), valorPlanejadoFmt:this.fmtC(vNaoIni),
       qtdAtraso:atrasadas.length.toLocaleString('pt-BR'), valorRiscoFmt:this.fmtC(valorRisco), maiorAtraso,
       qtdSusp:counts['Suspensa'],
       donutStyle, legend, secretarias, secretariasNota, meses,
