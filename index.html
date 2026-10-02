@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&amp;display=swap" rel="stylesheet">
+<script src="./pca-data.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Public Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #004890; } a:hover { color: #0060A8; }
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-thumb { background: #C7D2D8; border-radius: 6px; }
+  select { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100%;background:#EEF2F5;color:#16242B;font-size:14px;overflow:hidden">
+
+  <aside style="width:248px;flex-shrink:0;background:#004890;color:#fff;display:flex;flex-direction:column;padding:22px 16px">
+    <div style="background:#fff;border-radius:12px;padding:11px 13px;display:flex;align-items:center;justify-content:center;margin-bottom:6px">
+      <img src="assets/logo-maracanau.png" alt="Prefeitura de Maracanaú" style="height: 49px; display: block; object-fit: contain; width: 190px">
+    </div>
+    <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:#6E94BD;font-weight:700;padding:8px 10px 8px">Painel</div>
+    <nav style="display:flex;flex-direction:column;gap:4px">
+      <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="4">
+        <button onClick="{{ nav.onClick }}" style="{{ nav.style }}" style-hover="background:rgba(255,255,255,0.10)">
+          <span style="display:flex;align-items:center;justify-content:center;width:20px">{{ nav.icon }}</span>
+          <span>{{ nav.label }}</span>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="margin-top:auto;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px">
+      <div style="font-size:11px;color:#A9C0D6;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Lei nº 14.133/2021</div>
+      <div style="font-size:12.5px;color:#D6E4F2;margin-top:6px;line-height:1.45">PCA do exercício <strong>2026</strong>, conforme o art. 12, VII.</div>
+      <div style="font-size:11.5px;color:#6E94BD;margin-top:10px;line-height:1.5">PCA atualizado em {{ atualizado }}<br>Prazos calculados em {{ hojeFmt }}</div>
+    </div>
+  </aside>
+
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <header style="background:#fff;border-bottom:1px solid #E3E9ED;padding:16px 28px;display:flex;align-items:center;gap:18px;flex-shrink:0">
+      <div style="display:flex;flex-direction:column;min-width:0">
+        <div style="font-size:11.5px;color:#8A99A0;font-weight:600">Plano de Contratação Anual · 2026</div>
+        <h1 style="margin:2px 0 0;font-size:21px;font-weight:700;color:#004890;white-space:nowrap">{{ viewTitle }}</h1>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <label style="font-size:10px;color:#8A99A0;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Unidade orçamentária</label>
+          <select value="{{ fSecretaria }}" onChange="{{ onSec }}" style="appearance:none;border:1px solid #D7DFE4;border-radius:9px;padding:8px 30px 8px 11px;font-size:13px;color:#16242B;background:#F7F9FA url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236A7A82%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;') no-repeat right 10px center;cursor:pointer;font-weight:500;max-width:260px">
+            <sc-for list="{{ secretariaOptions }}" as="opt" hint-placeholder-count="3"><option value="{{ opt.v }}">{{ opt.l }}</option></sc-for>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <label style="font-size:10px;color:#8A99A0;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Situação</label>
+          <select value="{{ fStatus }}" onChange="{{ onStat }}" style="appearance:none;border:1px solid #D7DFE4;border-radius:9px;padding:8px 30px 8px 11px;font-size:13px;color:#16242B;background:#F7F9FA url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236A7A82%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;') no-repeat right 10px center;cursor:pointer;font-weight:500">
+            <sc-for list="{{ statusOptions }}" as="opt" hint-placeholder-count="3"><option value="{{ opt }}">{{ opt }}</option></sc-for>
+          </select>
+        </div>
+        <div style="width:1px;height:38px;background:#E3E9ED;margin:0 4px"></div>
+        <div style="width:38px;height:38px;border-radius:50%;background:#E1ECF8;color:#004890;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">JM</div>
+      </div>
+    </header>
+
+    <main style="flex:1;overflow-y:auto;padding:24px 28px 40px">
+
+      <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="width:38px;height:38px;border-radius:10px;background:#E7EFF7;color:#0B4F8A;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg></div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:24px;font-weight:800;white-space:nowrap;color:#16242B;line-height:1">{{ totalPlanFmt }}</span>
+              <span style="font-size:12px;color:#6A7A82;font-weight:500">Valor do PCA · {{ qtdFmt }} DFDs</span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="width:38px;height:38px;border-radius:10px;background:#E4F3EA;color:#189048;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="m9 11 3 3L22 4"></path></svg></div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:24px;font-weight:800;white-space:nowrap;color:#16242B;line-height:1">{{ totalExecFmt }}</span>
+              <span style="font-size:12px;color:#6A7A82;font-weight:500">Valor iniciado · {{ qtdIniciadas }} DFDs</span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="width:38px;height:38px;border-radius:10px;background:#E4F3EA;color:#189048;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 6l-9.5 9.5-5-5L1 18"></path><path d="M17 6h6v6"></path></svg></div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:24px;font-weight:800;white-space:nowrap;color:#189048;line-height:1">{{ pctExec }}%</span>
+              <span style="font-size:12px;color:#6A7A82;font-weight:500">do valor do PCA iniciado</span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="width:38px;height:38px;border-radius:10px;background:#FBF1DD;color:#9A6A12;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:24px;font-weight:800;white-space:nowrap;color:#16242B;line-height:1">{{ qtdSuperv }}</span>
+              <span style="font-size:12px;color:#6A7A82;font-weight:500">Supervenientes · {{ valorSupervFmt }}</span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="width:38px;height:38px;border-radius:10px;background:#FBEAE7;color:#C0392B;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:24px;font-weight:800;white-space:nowrap;color:#C0392B;line-height:1">{{ qtdAtraso }}</span>
+              <span style="font-size:12px;color:#6A7A82;font-weight:500">Prazo vencido · {{ valorRiscoFmt }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:14px">
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Andamento do PCA</h2>
+              <span style="font-size:12.5px;color:#6A7A82">Valor previsto vs. atividades iniciadas</span>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:18px">
+              <span style="font-size:44px;font-weight:800;color:#189048;line-height:.9">{{ pctExec }}%</span>
+              <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:4px">
+                <span style="font-size:13px;color:#6A7A82">do valor previsto já teve atividade iniciada</span>
+                <span style="font-size:13px;color:#16242B;font-weight:600">{{ totalExecFmt }} de {{ totalPlanFmt }}</span>
+              </div>
+            </div>
+            <div style="display:flex;height:16px;background:#EDF1F3;border-radius:9px;overflow:hidden;width:100%">
+              <div style="height:100%;background:#189048;width: {{ pctAprovW }}"></div>
+              <div style="height:100%;background:#D08A1E;width: {{ pctTramW }}"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:2px">
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+                <span style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em"><span style="width:9px;height:9px;border-radius:3px;background:#189048"></span>Aprovadas</span>
+                <span style="font-size:17px;font-weight:700;color:#189048">{{ valorConcluidoFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdAprov }} DFDs</span>
+              </div>
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+                <span style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em"><span style="width:9px;height:9px;border-radius:3px;background:#D08A1E"></span>Em tramitação</span>
+                <span style="font-size:17px;font-weight:700;color:#D08A1E">{{ valorAndamentoFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdTram }} DFDs · análise, aguardando, suspensas</span>
+              </div>
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+                <span style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em"><span style="width:9px;height:9px;border-radius:3px;background:#EDF1F3;border:1px solid #D7DFE4"></span>Não iniciadas</span>
+                <span style="font-size:17px;font-weight:700;color:#0060A8">{{ valorPlanejadoFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdNaoIni }} DFDs</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+            <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Situação das contratações</h2>
+            <div style="display:flex;align-items:center;gap:18px">
+              <div style="position:relative;flex-shrink:0">
+                <div style="{{ donutStyle }}"></div>
+                <div style="position:absolute;inset:30px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                  <span style="font-size:22px;font-weight:800;color:#16242B;line-height:1">{{ qtdFmt }}</span>
+                  <span style="font-size:10.5px;color:#6A7A82;font-weight:600">DFDs</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px;flex:1;min-width:0">
+                <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:9px">
+                    <span style="width:11px;height:11px;border-radius:3px;flex-shrink:0;background: {{ l.color }}"></span>
+                    <span style="font-size:12.5px;color:#46555E;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.status }}</span>
+                    <span style="font-size:12.5px;font-weight:700;color:#16242B">{{ l.count }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:14px">
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Valor por unidade orçamentária</h2>
+              <div style="display:flex;gap:14px;align-items:center">
+                <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#6A7A82"><span style="width:10px;height:10px;border-radius:3px;background:#C7E3D2"></span>Previsto</span>
+                <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#6A7A82"><span style="width:10px;height:10px;border-radius:3px;background:#189048"></span>Iniciado</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ secretarias }}" as="s" hint-placeholder-count="10">
+                <div style="display:flex;flex-direction:column;gap:7px" title="{{ s.full }}">
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+                    <span style="font-size:13px;color:#16242B;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><strong style="font-weight:700">{{ s.nome }}</strong><span style="color:#8A99A0"> · {{ s.full }}</span></span>
+                    <span style="font-size:12.5px;color:#6A7A82;white-space:nowrap">{{ s.valorFmt }} · {{ s.execPct }}% iniciado</span>
+                  </div>
+                  <div style="height:11px;border-radius:7px;background:#EDF1F3;overflow:hidden;width:100%">
+                    <div style="height:100%;border-radius:7px;background:#C7E3D2;position:relative;width: {{ s.barWidth }}">
+                      <div style="position:absolute;left:0;top:0;height:100%;border-radius:7px;background:#189048;width: {{ s.execWidthRel }}"></div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-size:11.5px;color:#8A99A0">{{ secretariasNota }}</span>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Prazo vencido sem início</h2>
+              <span style="font-size:11.5px;font-weight:700;color:#C0392B;background:#FBEAE7;padding:4px 10px;border-radius:20px">{{ qtdAtraso }} DFDs</span>
+            </div>
+            <span style="font-size:12px;color:#6A7A82;margin-top:-6px">Maiores valores com data prevista já ultrapassada</span>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ alertasTop }}" as="a" hint-placeholder-count="5">
+                <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid #F2DEDA;background:#FDF6F5;border-radius:11px">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#C0392B;margin-top:6px;flex-shrink:0"></div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                    <span style="font-size:13px;font-weight:600;color:#16242B;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ a.objeto }}</span>
+                    <span style="font-size:11.5px;color:#6A7A82">{{ a.secretaria }} · {{ a.valorFmt }}</span>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div style="font-size:15px;font-weight:800;color:#C0392B;line-height:1">{{ a.dias }}d</div>
+                    <div style="font-size:10.5px;color:#A8736B">vencido</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:14px">
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Aderência ao planejamento</h2>
+              <span style="font-size:12.5px;color:#6A7A82">PCA inicial vs. atualizado em {{ atualizado }}</span>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:18px">
+              <span style="font-size:44px;font-weight:800;color:#0060A8;line-height:.9">{{ pctOriginal }}%</span>
+              <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:4px">
+                <span style="font-size:13px;color:#6A7A82">do valor atual já constava no PCA inicial</span>
+                <span style="font-size:13px;color:#16242B;font-weight:600">{{ pctSuperv }}% incluído por demanda superveniente</span>
+              </div>
+            </div>
+            <div style="display:flex;height:16px;border-radius:9px;overflow:hidden;width:100%">
+              <div style="height:100%;background:#0060A8;width: {{ pctOriginalW }}"></div>
+              <div style="height:100%;background:#D08A1E;width: {{ pctSupervW }}"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:2px">
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:13px 15px;display:flex;flex-direction:column;gap:3px">
+                <span style="font-size:11.5px;color:#6A7A82;font-weight:600">PCA inicial</span>
+                <span style="font-size:18px;font-weight:800;color:#16242B">{{ valorInicialFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdInicial }} DFDs</span>
+              </div>
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:13px 15px;display:flex;flex-direction:column;gap:3px">
+                <span style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:#6A7A82;font-weight:600"><span style="width:10px;height:10px;border-radius:3px;background:#0060A8"></span>Mantidas</span>
+                <span style="font-size:18px;font-weight:800;color:#16242B">{{ valorOriginalFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdOriginal }} DFDs · {{ qtdAlterado }} com valor alterado</span>
+              </div>
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:13px 15px;display:flex;flex-direction:column;gap:3px">
+                <span style="display:flex;align-items:center;gap:7px;font-size:11.5px;color:#6A7A82;font-weight:600"><span style="width:10px;height:10px;border-radius:3px;background:#D08A1E"></span>Supervenientes</span>
+                <span style="font-size:18px;font-weight:800;color:#16242B">{{ valorSupervFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdSuperv }} inclusões</span>
+              </div>
+              <div style="border:1px solid #EAEFF2;border-radius:11px;padding:13px 15px;display:flex;flex-direction:column;gap:3px">
+                <span style="font-size:11.5px;color:#6A7A82;font-weight:600">Excluídas</span>
+                <span style="font-size:18px;font-weight:800;color:#16242B">{{ valorExclFmt }}</span>
+                <span style="font-size:11.5px;color:#8A99A0">{{ qtdExcl }} DFDs retiradas</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Demandas supervenientes</h2>
+              <span style="font-size:11.5px;font-weight:700;color:#9A6A12;background:#FBF1DD;padding:4px 10px;border-radius:20px">{{ qtdSuperv }} inclusões</span>
+            </div>
+            <span style="font-size:12px;color:#6A7A82;margin-top:-6px">Maiores inclusões após o PCA inicial</span>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ supervList }}" as="sv" hint-placeholder-count="5">
+                <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid #F0E6CF;background:#FDF9EF;border-radius:11px">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#D08A1E;margin-top:6px;flex-shrink:0"></div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                    <span style="font-size:13px;font-weight:600;color:#16242B;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ sv.objeto }}</span>
+                    <span style="font-size:11.5px;color:#6A7A82">{{ sv.secretaria }} · DFD {{ sv.id }}</span>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0">
+                    <div style="font-size:13px;font-weight:700;color:#16242B">{{ sv.valorFmt }}</div>
+                    <div style="font-size:10.5px;color:#A89668">{{ sv.situacao }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isContratacoes }}">
+      <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;overflow:hidden">
+        <div style="padding:18px 22px;border-bottom:1px solid #EEF2F4;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Contratações do PCA</h2>
+          <span style="font-size:12.5px;color:#6A7A82">{{ tabelaCount }} DFDs · {{ tabelaValorFmt }}</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+            <select value="{{ fOrigem }}" onChange="{{ onOrigem }}" style="appearance:none;border:1px solid #D7DFE4;border-radius:9px;padding:9px 30px 9px 12px;font-size:13px;color:#16242B;background:#F7F9FA url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236A7A82%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;') no-repeat right 10px center;cursor:pointer;font-weight:500">
+              <sc-for list="{{ origemOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+            </select>
+            <div style="position:relative">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99A0" stroke-width="2" style="position:absolute;left:12px;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <input value="{{ busca }}" onInput="{{ onBusca }}" placeholder="Buscar objeto ou nº DFD…" style="border:1px solid #D7DFE4;border-radius:9px;padding:9px 14px 9px 36px;font-size:13px;width:240px;outline:none;color:#16242B">
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead>
+              <tr style="background:#F7F9FA;text-align:left">
+                <th style="padding:12px 22px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">DFD / Objeto</th>
+                <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Unidade</th>
+                <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Modalidade</th>
+                <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700;text-align:right">Valor estimado</th>
+                <th style="padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Previsão</th>
+                <th style="padding:12px 22px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8A99A0;font-weight:700">Situação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ tabela }}" as="row" hint-placeholder-count="8">
+                <tr style="border-top:1px solid #EEF2F4" style-hover="background:#FAFCFB">
+                  <td style="padding:13px 22px;max-width:520px">
+                    <div style="font-weight:600;color:#16242B;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden" title="{{ row.objeto }}">{{ row.objeto }}</div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
+                      <span style="font-size:11.5px;color:#8A99A0">DFD {{ row.id }} · {{ row.categoria }}</span>
+                      <sc-if value="{{ row.isSuperv }}">
+                        <span style="font-size:10.5px;font-weight:700;color:#9A6A12;background:#FBF1DD;border-radius:5px;padding:2px 8px">Superveniente</span>
+                      </sc-if>
+                      <sc-if value="{{ row.isAlterado }}">
+                        <span style="font-size:10.5px;font-weight:700;color:#0B4F8A;background:#E7EFF7;border-radius:5px;padding:2px 8px" title="{{ row.valorIniTitle }}">Valor alterado</span>
+                      </sc-if>
+                    </div>
+                  </td>
+                  <td style="padding:13px 14px;color:#46555E;white-space:nowrap" title="{{ row.secretariaFull }}">{{ row.secretaria }}</td>
+                  <td style="padding:13px 14px;color:#46555E">{{ row.modalidade }}</td>
+                  <td style="padding:13px 14px;text-align:right;font-weight:600;color:#16242B;white-space:nowrap">{{ row.valorFmt }}</td>
+                  <td style="padding:13px 14px;color:#46555E;white-space:nowrap">{{ row.prevFmt }}</td>
+                  <td style="padding:13px 22px">
+                    <span style="display:inline-block;font-size:12px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;background: {{ row.statusBg }};color: {{ row.statusColor }}">{{ row.status }}</span>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <sc-if value="{{ temMais }}">
+          <div style="padding:16px 22px;border-top:1px solid #EEF2F4;display:flex;justify-content:center;align-items:center;gap:14px">
+            <span style="font-size:12.5px;color:#6A7A82">Exibindo {{ exibindo }} de {{ tabelaCount }}</span>
+            <button onClick="{{ onMais }}" style="border:1px solid #D7DFE4;background:#F7F9FA;border-radius:9px;padding:8px 16px;font-family:inherit;font-size:13px;font-weight:600;color:#004890;cursor:pointer" style-hover="background:#E7EFF7">Mostrar mais 100</button>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isCronograma }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Cronograma de contratações — 2026</h2>
+            <div style="display:flex;gap:14px;align-items:center">
+              <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#6A7A82"><span style="width:10px;height:10px;border-radius:3px;background:#C7E3D2"></span>Previsto</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#6A7A82"><span style="width:10px;height:10px;border-radius:3px;background:#189048"></span>Iniciado</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:260px;padding-top:8px">
+            <sc-for list="{{ meses }}" as="m" hint-placeholder-count="12">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;height:100%;justify-content:flex-end">
+                <span style="font-size:10.5px;color:#6A7A82;font-weight:600;white-space:nowrap">{{ m.valorFmt }}</span>
+                <div style="display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;justify-content:center" title="{{ m.tooltip }}">
+                  <div style="width:40%;max-width:18px;background:#C7E3D2;border-radius:4px 4px 0 0;height: {{ m.planH }}"></div>
+                  <div style="width:40%;max-width:18px;background:#189048;border-radius:4px 4px 0 0;height: {{ m.execH }}"></div>
+                </div>
+                <span style="font-size:11px;color:#6A7A82;font-weight:600">{{ m.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Próximas contratações previstas</h2>
+            <span style="font-size:12.5px;color:#6A7A82">Não iniciadas · próximos 90 dias · {{ qtdProximas }} DFDs</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <sc-for list="{{ proximas }}" as="p" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:16px;padding:13px 0;border-top:1px solid #EEF2F4">
+                <div style="width:54px;height:54px;border-radius:11px;background:#E7F0FA;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+                  <span style="font-size:15px;font-weight:800;color:#004890;line-height:1">{{ p.dia }}</span>
+                  <span style="font-size:9.5px;color:#5C82A8;font-weight:700;text-transform:uppercase">{{ p.mesLabel }}</span>
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:13.5px;font-weight:600;color:#16242B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ p.objeto }}">{{ p.objeto }}</div>
+                  <div style="font-size:11.5px;color:#8A99A0;margin-top:2px">{{ p.secretaria }} · {{ p.categoria }} · DFD {{ p.id }}</div>
+                </div>
+                <span style="font-size:14px;font-weight:700;color:#16242B;white-space:nowrap">{{ p.valorFmt }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isAlertas }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:12px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Prazo vencido</span>
+            <span style="font-size:28px;font-weight:800;color:#C0392B">{{ qtdAtraso }}</span>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:12px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Valor sem início</span>
+            <span style="font-size:28px;font-weight:800;color:#16242B">{{ valorRiscoFmt }}</span>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:12px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Maior atraso</span>
+            <span style="font-size:28px;font-weight:800;color:#16242B">{{ maiorAtraso }} dias</span>
+          </div>
+          <div style="background:#fff;border:1px solid #E3E9ED;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:12px;color:#6A7A82;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Suspensas</span>
+            <span style="font-size:28px;font-weight:800;color:#16242B">{{ qtdSusp }}</span>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+            <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Contratações com prazo vencido e sem atividade iniciada</h2>
+            <span style="font-size:12.5px;color:#6A7A82;white-space:nowrap">{{ alertasNota }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ alertas }}" as="a" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid #F2DEDA;background:#FDF6F5;border-radius:13px">
+                <div style="width:44px;height:44px;border-radius:11px;background:#FBEAE7;color:#C0392B;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;font-weight:700;color:#16242B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ a.objeto }}">{{ a.objeto }}</div>
+                  <div style="font-size:12px;color:#6A7A82;margin-top:3px">DFD {{ a.id }} · {{ a.secretaria }} · {{ a.modalidade }} · previsto {{ a.prazo }}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0">
+                  <div style="font-size:14px;font-weight:700;color:#16242B">{{ a.valorFmt }}</div>
+                  <div style="font-size:12px;font-weight:700;color:#C0392B;margin-top:2px">{{ a.dias }} dias vencido</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E3E9ED;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+            <h2 style="margin:0;font-size:15.5px;font-weight:700;color:#16242B">Atividades iniciadas sem vínculo com o PCA</h2>
+            <span style="font-size:11.5px;font-weight:700;color:#46555E;background:#EDF1F5;padding:4px 10px;border-radius:20px">{{ qtdSemVinculo }} atividades</span>
+          </div>
+          <span style="font-size:12.5px;color:#6A7A82;line-height:1.5;margin-top:-6px">Registros da planilha de atividades sem nº de DFD, ou com nº que não consta na versão do PCA de {{ atualizado }} (possíveis inclusões posteriores ou erros de digitação). Não entram nos indicadores acima.</span>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <sc-for list="{{ semVinculo }}" as="u" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid #EEF2F4">
+                <span style="font-size:11px;font-weight:700;color:#46555E;background:#EDF1F5;border-radius:6px;padding:3px 8px;flex-shrink:0;min-width:70px;text-align:center">{{ u.unidade }}</span>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:13px;font-weight:600;color:#16242B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ u.objeto }}">{{ u.objeto }}</div>
+                  <div style="font-size:11.5px;color:#8A99A0;margin-top:2px">{{ u.ref }}</div>
+                </div>
+                <span style="font-size:13px;font-weight:700;color:#16242B;white-space:nowrap">{{ u.valorFmt }}</span>
+                <span style="display:inline-block;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;background: {{ u.statusBg }};color: {{ u.statusColor }}">{{ u.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ temMaisSV }}">
+            <button onClick="{{ onMaisSV }}" style="align-self:center;border:1px solid #D7DFE4;background:#F7F9FA;border-radius:9px;padding:8px 16px;font-family:inherit;font-size:13px;font-weight:600;color:#004890;cursor:pointer" style-hover="background:#E7EFF7">Mostrar todas</button>
+          </sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860}}">
+class Component extends DCLogic {
+  state = { view: 'overview', fSecretaria: 'Todas', fStatus: 'Todos', fOrigem: 'Todas', busca: '', limite: 100, svTodas: false, ready: !!window.PCA_DATA };
+
+  componentDidMount(){
+    if(!window.PCA_DATA){ this._t = setInterval(()=>{ if(window.PCA_DATA){ clearInterval(this._t); this.setState({ready:true}); } },100); }
+  }
+  componentWillUnmount(){ clearInterval(this._t); }
+
+  STATUS_COR = { 'Aprovada':'#189048', 'Em análise':'#D08A1E', 'Aguardando secretaria':'#B4690E', 'Suspensa':'#7A8790', 'A iniciar':'#0060A8', 'Prazo vencido':'#C0392B' };
+  STATUS_BG  = { 'Aprovada':'#E4F3EA', 'Em análise':'#FBF1DD', 'Aguardando secretaria':'#F8E9D6', 'Suspensa':'#EEF1F3', 'A iniciar':'#E7EFF7', 'Prazo vencido':'#FBEAE7' };
+  ORDEM = ['Aprovada','Em análise','Aguardando secretaria','Suspensa','A iniciar','Prazo vencido'];
+  INICIADAS = ['Aprovada','Em análise','Aguardando secretaria','Suspensa'];
+  MES_LABEL = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+  fmtC(n){
+    if(n>=1e9) return 'R$ '+(n/1e9).toFixed(2).replace('.',',')+' bi';
+    if(n>=1e6) return 'R$ '+(n/1e6).toFixed(1).replace('.',',')+' mi';
+    if(n>=1e3) return 'R$ '+Math.round(n/1e3)+' mil';
+    return 'R$ '+Math.round(n);
+  }
+  fmtF(n){ return 'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  fmtD(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return d+'/'+m+'/'+y; }
+
+  prep(){
+    if(this._items) return;
+    const D = window.PCA_DATA; const now = new Date();
+    this._hoje = now.toISOString().slice(0,10);
+    const t0 = Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+    this._items = D.items.map(d=>{
+      const [y,m,dd]=d.p.split('-').map(Number);
+      const dias = Math.round((t0-Date.UTC(y,m-1,dd))/864e5);
+      const status = d.s ? d.s : (dias>0 ? 'Prazo vencido' : 'A iniciar');
+      return { ...d, mes:m, dias, status, iniciada: !!d.s, superv: d.vi===null, alterado: d.vi!==null && Math.abs(d.vi-d.v)>0.5 };
+    });
+  }
+
+  renderVals(){
+    const S = this.state;
+    const nav = (k)=>()=>this.setState({view:k});
+    const ic = (paths)=>React.createElement('svg',{width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'},paths.map((d,i)=>React.createElement('path',{key:i,d})));
+    const titles = { overview:'Visão Geral', contratacoes:'Contratações', cronograma:'Cronograma', alertas:'Alertas e Prazos' };
+    const navDef = [
+      { key:'overview', label:'Visão Geral', paths:['M3 3h7v7H3z','M14 3h7v7h-7z','M14 14h7v7h-7z','M3 14h7v7H3z'] },
+      { key:'contratacoes', label:'Contratações', paths:['M8 6h13','M8 12h13','M8 18h13','M3 6h.01','M3 12h.01','M3 18h.01'] },
+      { key:'cronograma', label:'Cronograma', paths:['M3 4h18v18H3z','M16 2v4','M8 2v4','M3 10h18'] },
+      { key:'alertas', label:'Alertas e Prazos', paths:['M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z','M12 9v4','M12 17h.01'] }
+    ];
+    const baseNav = 'display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;cursor:pointer;padding:11px 13px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;';
+    const navItems = navDef.map(n=>({ label:n.label, icon:ic(n.paths), onClick:nav(n.key),
+      style: baseNav + (S.view===n.key ? 'background:rgba(255,255,255,0.15);color:#FFFFFF;' : 'background:transparent;color:#A9C0D6;') }));
+    const base = { navItems, viewTitle: titles[S.view],
+      isOverview:S.view==='overview', isContratacoes:S.view==='contratacoes', isCronograma:S.view==='cronograma', isAlertas:S.view==='alertas' };
+    if(!window.PCA_DATA) return base;
+
+    this.prep();
+    const D = window.PCA_DATA, U = D.units;
+    const sum = (arr,f)=>arr.reduce((a,d)=>a+(f?f(d):d.v),0);
+
+    let list = this._items;
+    if(S.fSecretaria!=='Todas') list = list.filter(d=>d.u===S.fSecretaria);
+    if(S.fStatus==='Iniciadas') list = list.filter(d=>d.iniciada);
+    else if(S.fStatus!=='Todos') list = list.filter(d=>d.status===S.fStatus);
+
+    const totalPlan = sum(list);
+    const ini = list.filter(d=>d.iniciada);
+    const totalExec = sum(ini);
+    const pctExec = totalPlan ? Math.round(totalExec/totalPlan*100) : 0;
+    const aprov = list.filter(d=>d.status==='Aprovada');
+    const tram = ini.filter(d=>d.status!=='Aprovada');
+    const naoIni = list.filter(d=>!d.iniciada);
+    const vAprov = sum(aprov), vTram = sum(tram);
+
+    const atrasadas = list.filter(d=>d.status==='Prazo vencido');
+    const atrasoPorValor = atrasadas.slice().sort((a,b)=>b.v-a.v);
+    const valorRisco = sum(atrasadas);
+    const maiorAtraso = atrasadas.reduce((m,d)=>Math.max(m,d.dias),0);
+
+    const superv = list.filter(d=>d.superv);
+    const valorSuperv = sum(superv);
+    const pctSuperv = totalPlan ? Math.round(valorSuperv/totalPlan*100) : 0;
+    const excl = S.fSecretaria==='Todas' ? D.excluded : D.excluded.filter(e=>e.u===S.fSecretaria);
+    const supervList = superv.slice().sort((a,b)=>b.v-a.v).slice(0,5).map(d=>({ id:d.i, objeto:d.o, secretaria:d.u, valorFmt:this.fmtC(d.v), situacao:d.status }));
+
+    const counts = {}; this.ORDEM.forEach(s=>counts[s]=0);
+    list.forEach(d=>counts[d.status]++);
+    const totalCount = list.length || 1;
+    let acc=0; const segs=[]; const legend=[];
+    this.ORDEM.forEach(s=>{ const c=counts[s]; if(c<=0) return; const st=acc/totalCount*100; acc+=c; segs.push(this.STATUS_COR[s]+' '+st+'% '+(acc/totalCount*100)+'%'); legend.push({status:s,color:this.STATUS_COR[s],count:c.toLocaleString('pt-BR')}); });
+    const donutStyle = 'width:148px;height:148px;border-radius:50%;background:conic-gradient('+(segs.length?segs.join(','):'#E3E9ED 0% 100%')+')';
+
+    const secMap = {};
+    list.forEach(d=>{ const s=secMap[d.u]||(secMap[d.u]={plan:0,exec:0}); s.plan+=d.v; if(d.iniciada) s.exec+=d.v; });
+    const secAll = Object.keys(secMap).map(k=>({nome:k, ...secMap[k]})).sort((a,b)=>b.plan-a.plan);
+    const secArr = secAll.slice(0,10);
+    const maxSec = secArr.length ? secArr[0].plan : 1;
+    const secretarias = secArr.map(s=>({ nome:s.nome, full:U[s.nome]||s.nome, valorFmt:this.fmtC(s.plan),
+      execPct: s.plan ? Math.round(s.exec/s.plan*100) : 0, barWidth:(s.plan/maxSec*100)+'%', execWidthRel:(s.plan? s.exec/s.plan*100:0)+'%' }));
+    const secretariasNota = secAll.length>10 ? '10 maiores de '+secAll.length+' unidades · as demais somam '+this.fmtC(sum(secAll.slice(10),s=>s.plan)) : secAll.length+' unidade(s)';
+
+    const mp = Array(12).fill(0), me = Array(12).fill(0);
+    list.forEach(d=>{ mp[d.mes-1]+=d.v; if(d.iniciada) me[d.mes-1]+=d.v; });
+    const maxMes = Math.max(1, ...mp);
+    const meses = this.MES_LABEL.map((lb,i)=>({ label:lb, valorFmt:mp[i]?this.fmtC(mp[i]).replace('R$ ',''):'', planH:(mp[i]/maxMes*90)+'%', execH:(me[i]/maxMes*90)+'%',
+      tooltip: lb+': previsto '+this.fmtC(mp[i])+' · iniciado '+this.fmtC(me[i]) }));
+
+    const busca = S.busca.trim().toLowerCase();
+    let listaTab = list;
+    if(S.fOrigem==='Original') listaTab = listaTab.filter(d=>!d.superv);
+    else if(S.fOrigem==='Superveniente') listaTab = listaTab.filter(d=>d.superv);
+    else if(S.fOrigem==='Alterado') listaTab = listaTab.filter(d=>d.alterado);
+    if(busca) listaTab = listaTab.filter(d=>d.o.toLowerCase().includes(busca)||d.i.includes(busca));
+    listaTab = listaTab.slice().sort((a,b)=>b.v-a.v);
+    const tabela = listaTab.slice(0,S.limite).map(d=>({
+      id:d.i, objeto:d.o, secretaria:d.u, secretariaFull:U[d.u]||d.u, categoria:d.c, modalidade:d.m,
+      valorFmt:this.fmtF(d.v), prevFmt:this.fmtD(d.p), status:d.status, statusColor:this.STATUS_COR[d.status], statusBg:this.STATUS_BG[d.status],
+      isSuperv:d.superv, isAlterado:d.alterado, valorIniTitle: d.alterado ? 'PCA inicial: '+this.fmtF(d.vi) : ''
+    }));
+
+    const lim = new Date(); lim.setDate(lim.getDate()+90); const limIso = lim.toISOString().slice(0,10);
+    const prox = list.filter(d=>!d.iniciada && d.p>=this._hoje && d.p<=limIso).sort((a,b)=>a.p<b.p?-1:a.p>b.p?1:b.v-a.v);
+    const proximas = prox.slice(0,15).map(d=>({ id:d.i, objeto:d.o, secretaria:d.u, categoria:d.m, valorFmt:this.fmtC(d.v),
+      dia:d.p.slice(8,10), mesLabel:this.MES_LABEL[d.mes-1] }));
+
+    const mapA = d=>({ id:d.i, objeto:d.o, secretaria:d.u, modalidade:d.m, valorFmt:this.fmtC(d.v), dias:d.dias, prazo:this.fmtD(d.p) });
+    const alertas = atrasoPorValor.slice(0,50).map(mapA);
+
+    let sv = D.unlinked; if(S.fSecretaria!=='Todas') sv = sv.filter(u=>u.u.toUpperCase().includes(S.fSecretaria));
+    const svSorted = sv.slice().sort((a,b)=>b.v-a.v);
+    const semVinculo = (S.svTodas?svSorted:svSorted.slice(0,15)).map(u=>({ unidade:u.u, objeto:u.o||'(sem descrição)', ref:u.ref?('Ref.: '+u.ref):'Sem nº de DFD informado',
+      valorFmt:u.v?this.fmtC(u.v):'—', status:u.s, statusColor:this.STATUS_COR[u.s], statusBg:this.STATUS_BG[u.s] }));
+
+    const secOpts = Object.keys(U).sort().map(k=>({v:k,l:k+' — '+U[k]}));
+
+    return { ...base,
+      atualizado:D.meta.atualizado, hojeFmt:this.fmtD(this._hoje),
+      fSecretaria:S.fSecretaria, fStatus:S.fStatus, busca:S.busca, fOrigem:S.fOrigem,
+      secretariaOptions:[{v:'Todas',l:'Todas as unidades'},...secOpts],
+      statusOptions:['Todos','Iniciadas',...this.ORDEM],
+      origemOptions:[{v:'Todas',l:'Todas as origens'},{v:'Original',l:'Constavam no PCA inicial'},{v:'Superveniente',l:'Supervenientes'},{v:'Alterado',l:'Com valor alterado'}],
+      onSec:(e)=>this.setState({fSecretaria:e.target.value,limite:100}),
+      onStat:(e)=>this.setState({fStatus:e.target.value,limite:100}),
+      onOrigem:(e)=>this.setState({fOrigem:e.target.value,limite:100}),
+      onBusca:(e)=>this.setState({busca:e.target.value,limite:100}),
+      onMais:()=>this.setState(s=>({limite:s.limite+100})),
+      onMaisSV:()=>this.setState({svTodas:true}),
+      totalPlanFmt:this.fmtC(totalPlan), totalExecFmt:this.fmtC(totalExec), pctExec,
+      pctAprovW:(totalPlan?vAprov/totalPlan*100:0)+'%', pctTramW:(totalPlan?vTram/totalPlan*100:0)+'%',
+      qtdFmt:list.length.toLocaleString('pt-BR'), qtdIniciadas:ini.length, qtdAprov:aprov.length, qtdTram:tram.length, qtdNaoIni:naoIni.length.toLocaleString('pt-BR'),
+      valorConcluidoFmt:this.fmtC(vAprov), valorAndamentoFmt:this.fmtC(vTram), valorPlanejadoFmt:this.fmtC(sum(naoIni)),
+      qtdAtraso:atrasadas.length.toLocaleString('pt-BR'), valorRiscoFmt:this.fmtC(valorRisco), maiorAtraso,
+      qtdSusp:counts['Suspensa'],
+      donutStyle, legend, secretarias, secretariasNota, meses,
+      tabela, tabelaCount:listaTab.length.toLocaleString('pt-BR'), tabelaValorFmt:this.fmtC(sum(listaTab)),
+      temMais: listaTab.length>S.limite, exibindo: Math.min(S.limite,listaTab.length),
+      proximas, qtdProximas:prox.length,
+      alertasTop: atrasoPorValor.slice(0,5).map(mapA), alertas,
+      alertasNota: atrasadas.length>50 ? '50 maiores valores de '+atrasadas.length.toLocaleString('pt-BR') : atrasadas.length+' DFDs',
+      qtdSuperv:superv.length, valorSupervFmt:this.fmtC(valorSuperv), supervList,
+      qtdOriginal:(list.length-superv.length).toLocaleString('pt-BR'), valorOriginalFmt:this.fmtC(totalPlan-valorSuperv),
+      qtdAlterado:list.filter(d=>d.alterado).length,
+      pctSuperv, pctOriginal:100-pctSuperv, pctSupervW:pctSuperv+'%', pctOriginalW:(100-pctSuperv)+'%',
+      qtdInicial: S.fSecretaria==='Todas' ? D.meta.inicialQtd.toLocaleString('pt-BR') : (list.filter(d=>!d.superv).length+excl.length),
+      valorInicialFmt: this.fmtC(S.fSecretaria==='Todas' ? D.meta.inicialValor : sum(list.filter(d=>!d.superv),d=>d.vi)+sum(excl)),
+      qtdExcl:excl.length, valorExclFmt:this.fmtC(sum(excl)),
+      qtdSemVinculo:sv.length, semVinculo, temMaisSV: !S.svTodas && sv.length>15
+    };
+  }
+}
+</script>
+</body>
+</html>
